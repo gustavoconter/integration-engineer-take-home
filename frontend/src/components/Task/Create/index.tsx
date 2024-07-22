@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { z } from "zod";
-import useForm from "../../hooks/useForm";
-import { Input } from "../Input";
-import { Button } from "../Button";
-import { Alert, ApiTaskResponse, Task } from "../../types";
+import useForm from "../../../hooks/useForm";
+import { Input } from "../../Input";
+import { Button } from "../../Button";
+import { Alert, ApiTaskResponse, Task } from "../../../types";
 
-const TaskCreationForm: React.FC<{
+const TaskCreate: React.FC<{
 	addAlert: (alert: Alert) => void;
 	setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 }> = ({ addAlert, setTasks }) => {
@@ -133,4 +133,4 @@ const TaskCreationForm: React.FC<{
 	);
 };
 
-export default TaskCreationForm;
+export default TaskCreate;

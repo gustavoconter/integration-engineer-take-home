@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import TaskCreationForm from "./components/TaskCreationForm";
+import TaskCreate from "./components/Task/Create";
 import { TaskList } from "./components/Task/List";
 import { Alert, ApiTaskResponse, Task } from "./types";
 import Alerts from "./components/Alerts";
@@ -34,9 +34,9 @@ function App() {
 		[key: string]: Alert;
 	}>({});
 
-    /**
-     * Convert the alerts object to an array
-     */
+	/**
+	 * Convert the alerts object to an array
+	 */
 	const alerts = useMemo(() => {
 		return Object.values(rawAlerts);
 	}, [rawAlerts]);
@@ -83,11 +83,7 @@ function App() {
 					<h1 className="font-bold text-3xl text-orange-800">
 						Task Management App
 					</h1>
-					<TaskCreationForm
-						addAlert={addAlert}
-						setTasks={setTasks}
-						key={"taskCreationForm"}
-					/>
+					<TaskCreate addAlert={addAlert} setTasks={setTasks} />
 					<TaskList tasks={tasks} addAlert={addAlert} setTasks={setTasks} />
 				</div>
 			</section>
