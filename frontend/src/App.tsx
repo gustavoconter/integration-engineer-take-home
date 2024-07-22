@@ -1,70 +1,94 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import TaskCreationForm from "./components/TaskCreationForm";
-
-type Task = {
-	id: string;
-	title: string;
-	description: string;
-};
+import { TaskList } from "./components/Task/List";
+import { Alert, ApiTaskResponse, Task } from "./types";
+import Alerts from "./components/Alerts";
 
 function App() {
 	const [tasks, setTasks] = useState<Task[]>([]);
 
+	/**
+	 * When the component mounts, fetch the tasks from the server
+	 */
 	useEffect(() => {
 		fetchTasks();
 	}, []);
 
+	/**
+	 * Fetches the tasks from the server on the initial render
+	 */
 	const fetchTasks = async () => {
 		const response = await fetch("http://localhost:8000/tasks");
-		const tasks = await response.json();
+
+		const json = (await response.json()) as ApiTaskResponse;
+
+		const tasks = json.data?.tasks || [];
+
 		setTasks(tasks);
 	};
 
-	const deleteTask = async (id: string) => {};
+	/**
+	 * Alerts state
+	 */
+	const [rawAlerts, setAlerts] = useState<{
+		[key: string]: Alert;
+	}>({});
+
+    /**
+     * Convert the alerts object to an array
+     */
+	const alerts = useMemo(() => {
+		return Object.values(rawAlerts);
+	}, [rawAlerts]);
+
+	/**
+	 * Adds an alert to the alerts state
+	 * @param alert The alert to be added
+	 * @returns void
+	 */
+	const addAlert = (alert: Alert) => {
+		/**
+		 * Generate a random id for the alert
+		 */
+		const alertId = Math.ceil(Math.random() * 1000000);
+
+		/**
+		 * Add the alert to the alerts state
+		 */
+		setAlerts((state) => {
+			state[alertId] = alert;
+			return {
+				...state,
+			};
+		});
+
+		/**
+		 * Remove the alert after 5 seconds
+		 */
+		setTimeout(() => {
+			setAlerts((state) => {
+				delete state[alertId];
+				return {
+					...state,
+				};
+			});
+		}, 2500);
+	};
 
 	return (
 		<main id="tasks">
+			<Alerts alerts={alerts} />
 			<section className="py-16 text-center bg-white">
 				<div className="container mx-auto max-w-3xl">
 					<h1 className="font-bold text-3xl text-orange-800">
 						Task Management App
 					</h1>
 					<TaskCreationForm
-						onTaskCreated={fetchTasks}
+						addAlert={addAlert}
+						setTasks={setTasks}
 						key={"taskCreationForm"}
 					/>
-					<div className="text-center bg-slate-100 rounded-lg mt-16 p-4">
-						<h2 className="font-medium text-xl">View your current tasks</h2>
-						<div className="mt-4">
-							<ul className="text-start flex flex-col gap-2">
-								{tasks.map((task) => (
-									<li
-										key={task.id}
-										className="flex py-2 px-4 bg-white rounded-md"
-									>
-										<div className="grow flex flex-col">
-											<h3 className="font-medium">{task.title}</h3>
-											<p className="text-slate-500 text-sm mt-1">
-												{task.description}
-											</p>
-										</div>
-										<div className="grid place-content-center grow-0 shrink-0">
-											<button onClick={() => deleteTask(task.id)}>D</button>
-										</div>
-									</li>
-								))}
-								{tasks.length === 0 && (
-									<li className="text-orange-950 text-center mt-4">
-										<div className="mx-auto grid place-content-center h-12 w-12 rounded-full text-2xl text-orange-600 bg-orange-600/5 mb-4">
-											:(
-										</div>
-										No tasks found. <br />
-										Fill in the form above to create your first task!
-									</li>
-								)}
-							</ul>
-						</div>
-					</div>
+					<TaskList tasks={tasks} addAlert={addAlert} setTasks={setTasks} />
 				</div>
 			</section>
 		</main>

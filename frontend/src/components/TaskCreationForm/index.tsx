@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { z } from "zod";
-import useForm from "../hooks/useForm";
-import { Input } from "./Input";
-import { Button } from "./Button";
+import useForm from "../../hooks/useForm";
+import { Input } from "../Input";
+import { Button } from "../Button";
+import { Alert, ApiTaskResponse, Task } from "../../types";
 
 const TaskCreationForm: React.FC<{
-	onTaskCreated: () => void;
-}> = ({ onTaskCreated }) => {
+	addAlert: (alert: Alert) => void;
+	setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+}> = ({ addAlert, setTasks }) => {
+	/**
+	 * Define the state for the loading state of the form
+	 */
 	const [creatingTask, setCreatingTask] = useState(false);
 
 	/**
@@ -46,14 +51,32 @@ const TaskCreationForm: React.FC<{
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(form.data),
-		}).then(async (response) => {
-			const data = await response.json();
-			setTimeout(() => {
+		})
+			.then(async (response) => {
+				const data = (await response.json()) as ApiTaskResponse;
+
+				const tasks = data.data?.tasks || [];
+
+				setTasks(tasks);
+
+				addAlert({
+					type: "success",
+					message: "Task created successfully",
+				});
+
+				/**
+				 * Reset the form and set the creating task state to false
+				 */
 				form.reset();
 				setCreatingTask(false);
-				onTaskCreated();
-			}, 1000);
-		});
+			})
+			.catch(() => {
+				addAlert({
+					type: "error",
+					message: "Failed to create task",
+				});
+				setCreatingTask(false);
+			});
 	};
 
 	return (

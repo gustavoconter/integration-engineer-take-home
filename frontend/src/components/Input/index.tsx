@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { mergeClasses } from "../utils";
+import { mergeClasses } from "../../utils";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 export interface InputProps

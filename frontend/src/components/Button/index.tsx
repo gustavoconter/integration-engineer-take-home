@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { mergeClasses } from "../utils";
+import { mergeClasses } from "../../utils";
 
 export interface ButtonProps
 	extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
