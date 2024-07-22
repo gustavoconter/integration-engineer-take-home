@@ -49,4 +49,46 @@ Best wishes, and we're excited to review your submission!
 Regards,
 The Duda Solutions Engineering Team
 
-## Add any instructions to get your submission running below this line.
+# Running the Application
+
+To preview the app, you need to run the backend and frontend separately. Below are the instructions to run both parts.
+
+### Running the Backend
+
+To run the backend, you need to follow these steps:
+
+1. Open a terminal window.
+2. Install the required dependencies by running the following command:
+
+```bash
+npm install
+```
+
+3. Start the backend server by running the following command:
+
+```bash
+node index.js
+```
+
+The backend server will start running on port 8000.
+
+### Running the Frontend
+
+To run the frontend, you need to follow these steps:
+
+1. Open a new terminal window.
+2. Install the required dependencies by running the following command:
+
+```bash
+npm install
+```
+
+3. Start the frontend server by running the following command:
+
+```bash
+npm run dev
+```
+
+The frontend server will start running on port 5173.
+
+Once both the backend and frontend servers are running, you can access the application by visiting `http://localhost:5173` in your web browser.
